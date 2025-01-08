@@ -1,0 +1,17 @@
+.nav button {
+    background-color: firebrick;
+    color: antiquewhite;
+    width: 200px;
+    height: 50px;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.nav button:hover {
+    box-shadow: 5px 5px darkolivegreen;
+}
+
+.nav button:focus {
+    color: firebrick;
+    background-color: antiquewhite;
+}

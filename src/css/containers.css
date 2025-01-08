@@ -1,0 +1,37 @@
+.container.app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: cornsilk;
+}
+
+.container.header {
+    padding-top: 20px;
+    height: 100px;
+}
+
+.container.nav.buttons {
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+}
+
+.container.page {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+}
+
+.container.page > .sub {
+    height: 95%;
+    width: 90%;
+    border-radius: 10px;
+    background-color: rgb(224, 190, 161);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
