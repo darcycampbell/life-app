@@ -1,8 +1,10 @@
 import "./App.css";
 import "../src/css/buttons.css";
 import "../src/css/containers.css";
+import "../src/css/item.css";
 import "../src/css/text.css";
 import { useState } from "react";
+import MainItem from "./components/MainItem";
 
 function App() {
   const [pageSelected, setPageSelected] = useState("None");
@@ -31,7 +33,7 @@ function App() {
       </div>
       <div className="page container">
         <div className="sub">
-          {pages[pageSelected]}
+          <MainItem />
         </div>
       </div>
     </div>
