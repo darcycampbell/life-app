@@ -1,10 +1,9 @@
 import React, { useEffect, useRef } from "react";
 
-const MainItem = () => {
-  const widthRef = useRef(null);
+const MainItem = ({ completed, itemName }) => {
   const progressCircle = useRef(null);
   const svgRef = useRef(null);
-  const percentageComplete = 1;
+  const percentageComplete = completed;
 
   useEffect(() => {
     const circumference = 2 * Math.PI * 95;
@@ -16,17 +15,17 @@ const MainItem = () => {
         svgRef.current.classList.add("complete");
       }
     }
-  }, [widthRef, progressCircle]);
+  }, [progressCircle, percentageComplete]);
 
   return (
     <div className="main item">
-      <div className="circular container" ref={widthRef}>
+      <div className="circular container">
         <img src="https://picsum.photos/200" alt="placeholder" />
         <svg ref={svgRef}>
           <circle ref={progressCircle} />
         </svg>
       </div>
-      <h3>Name</h3>
+      <h3>{itemName}</h3>
     </div>
   );
 };
