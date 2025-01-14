@@ -1,20 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
 import MainItem from "./MainItem";
-import habits from "../content/habits";
-import categories from "../content/categories";
-import goals from "../content/goals";
-import contacts from "../content/contacts";
+import OverlayWindow from "./Misc/OverlayWindow";
 import usePercentCalculator from "../hooks/usePercentCalculator";
 
-const ItemGrid = () => {
+const ItemGrid = ({content}) => {
+  const [isOpen, setIsOpen] = useState(false);
   const [mainItems, setMainItems] = useState([]);
   const [flexGap, setFlexGap] = useState(15);
   const containerRef = useRef();
   const calc = usePercentCalculator()
 
   useEffect(() => {
-    if (contacts) {
-      setMainItems(contacts.sort((a, b) => calc(a) - calc(b)));
+    if (content) {
+      setMainItems(content.sort((a, b) => calc(a) - calc(b)));
     }
 
     const container = containerRef.current;
@@ -31,7 +29,7 @@ const ItemGrid = () => {
     return () => {
       resizeObserver.disconnect();
     };
-  }, [setMainItems, calc]);
+  }, [setMainItems, content, calc]);
 
   function calcNumOfColumns(containterWidth) {
     let idealColumns;
@@ -58,6 +56,10 @@ const ItemGrid = () => {
           <MainItem key={item.index} name={item.name} image={item.image} percent={calc(item)} today={item.today} />
         );
       })}
+      <OverlayWindow isOpen={isOpen} setIsOpen={setIsOpen}>
+        <h3>Testing...</h3>
+      </OverlayWindow>
+      <button className="add" onClick={() => {setIsOpen(!isOpen)}}>{isOpen ? "x" : "+"}</button>
     </div>
   );
 };

@@ -2,7 +2,7 @@ const contacts = [
   {
     index: 1,
     type: "contact",
-    name: "Jonas",
+    name: "Family",
     image: "https://picsum.photos/200",
     target: 20,
     today: false,
