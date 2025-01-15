@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import MainItem from "./MainItem";
 import OverlayWindow from "./Misc/OverlayWindow";
+import AddItem from "./AddItem";
 import usePercentCalculator from "../hooks/usePercentCalculator";
 
 const ItemGrid = ({content}) => {
@@ -57,7 +58,7 @@ const ItemGrid = ({content}) => {
         );
       })}
       <OverlayWindow isOpen={isOpen} setIsOpen={setIsOpen}>
-        <h3>Testing...</h3>
+        <AddItem type={content[0].type} />
       </OverlayWindow>
       <button className="add" onClick={() => {setIsOpen(!isOpen)}}>{isOpen ? "x" : "+"}</button>
     </div>
