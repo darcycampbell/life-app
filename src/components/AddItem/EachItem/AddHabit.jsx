@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
+import NameInput from "../Comps/NameInput";
+import ImageUploader from "../Comps/ImageUploader";
 
 const AddHabit = () => {
   const [onOff, setOnOff] = useState(true);
@@ -9,11 +11,8 @@ const AddHabit = () => {
 
   return (
     <form>
-      <div>
-        <label for="name">Name your habit </label>
-        <input type="text" name="name" id="name" required />
-      </div>
-      <p>UPLOAD IMAGE</p>
+      <NameInput name={"What do you want to improve? "} />
+      <ImageUploader />
       <div>
         <label for="target">Aim to do </label>
         <input type="text" name="target" id="target" required />

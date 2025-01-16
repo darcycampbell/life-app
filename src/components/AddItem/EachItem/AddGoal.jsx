@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import NameInput from "../Comps/NameInput";
+import ImageUploader from "../Comps/ImageUploader";
 
 const AddGoal = () => {
     const [displayInfo, setDisplayInfo] = useState(false)
@@ -7,11 +9,8 @@ const AddGoal = () => {
     }
   return (
     <form>
-      <div>
-        <label for="name">What do you want? </label>
-        <input type="text" name="name" id="name" />
-      </div>
-      <p>UPLOAD IMAGE</p>
+      <NameInput name={"What do you want to buy? "} />
+      <ImageUploader />
       <div>
         <label for="target">How much does it cost? </label>
         <input type="text" name="target" id="target" />

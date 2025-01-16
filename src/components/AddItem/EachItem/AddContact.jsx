@@ -1,13 +1,12 @@
 import React from 'react'
+import NameInput from "../Comps/NameInput";
+import ImageUploader from "../Comps/ImageUploader";
 
 const AddContact = () => {
   return (
     <form>
-      <div>
-        <label for="name">Who is it? </label>
-        <input type="text" name="name" id="name" required />
-      </div>
-      <p>UPLOAD IMAGE</p>
+      <NameInput name={"Who do you want to stay in touch with? "} />
+      <ImageUploader />
       <div>
         <label for="target">Aim to talk with them every </label>
         <input type="text" name="target" id="target" required />
