@@ -4,12 +4,12 @@ import OverlayWindow from "./Misc/OverlayWindow";
 import AddItem from "./AddItem";
 import usePercentCalculator from "../hooks/usePercentCalculator";
 
-const ItemGrid = ({content}) => {
+const ItemGrid = ({ content, category }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [mainItems, setMainItems] = useState([]);
   const [flexGap, setFlexGap] = useState(15);
   const containerRef = useRef();
-  const calc = usePercentCalculator()
+  const calc = usePercentCalculator();
 
   useEffect(() => {
     if (content) {
@@ -54,13 +54,25 @@ const ItemGrid = ({content}) => {
     >
       {mainItems.map((item) => {
         return (
-          <MainItem key={item.index} name={item.name} image={item.image} percent={calc(item)} today={item.today} />
+          <MainItem
+            key={item.index}
+            name={item.title}
+            image={item.image}
+            percent={item.score}
+          />
         );
       })}
       <OverlayWindow isOpen={isOpen} setIsOpen={setIsOpen}>
-        <AddItem type={content[0].type} />
+        <AddItem type={category} />
       </OverlayWindow>
-      <button className="add" onClick={() => {setIsOpen(!isOpen)}}>{isOpen ? "x" : "+"}</button>
+      <button
+        className="add"
+        onClick={() => {
+          setIsOpen(!isOpen);
+        }}
+      >
+        {isOpen ? "x" : "+"}
+      </button>
     </div>
   );
 };
