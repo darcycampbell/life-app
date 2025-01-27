@@ -1,13 +1,11 @@
 const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
-const bodyParser = require('body-parser');
 require('dotenv').config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(bodyParser.json())
 
 // Database configuration
 const pool = new Pool({
@@ -19,7 +17,7 @@ const pool = new Pool({
 });
 
 // Test endpoint
-app.get('/api/test', async (req, res) => {
+app.post('/database', async (req, res) => {
   try {
     const query = `
       UPDATE habits h

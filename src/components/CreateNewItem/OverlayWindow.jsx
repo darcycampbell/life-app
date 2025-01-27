@@ -1,5 +1,4 @@
 import React from "react";
-import "./index.css"
 
 const OverlayWindow = ({ isOpen, setIsOpen, children }) => {
   const displaySetting = [{ display: "none" }, { display: "flex" }];

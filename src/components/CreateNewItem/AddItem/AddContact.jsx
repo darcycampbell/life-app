@@ -1,6 +1,6 @@
 import React from 'react'
-import NameInput from "../Comps/NameInput";
-import ImageUploader from "../Comps/ImageUploader";
+import NameInput from "./components/NameInput";
+import ImageUploader from "./components/ImageUploader";
 
 const AddContact = () => {
   return (

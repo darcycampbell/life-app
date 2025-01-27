@@ -1,78 +1,50 @@
 import React, { useEffect, useRef, useState } from "react";
-import MainItem from "./MainItem";
-import OverlayWindow from "./Misc/OverlayWindow";
-import AddItem from "./AddItem";
-import usePercentCalculator from "../hooks/usePercentCalculator";
+import Item from "./Item";
+import CreateNewItem from "./CreateNewItem/index";
+import useCalculator from "../hooks/useCalculator";
 
-const ItemGrid = ({ content, category }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [mainItems, setMainItems] = useState([]);
+const ItemGrid = ({ content }) => {
+  const [items, setItems] = useState([]);
   const [flexGap, setFlexGap] = useState(15);
+  const gapSize = { gap: `${flexGap}px` };
   const containerRef = useRef();
-  const calc = usePercentCalculator();
+  const calcGap = useCalculator("calculate gap");
+  const calcPercent = useCalculator("calculate percentage");
 
   useEffect(() => {
     if (content) {
-      setMainItems(content.sort((a, b) => calc(a) - calc(b)));
+      setItems(content.sort((a, b) => calcPercent(a) - calcPercent(b)));
     }
-
     const container = containerRef.current;
     if (!container) return;
-
     const resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
-        calcNumOfColumns(entry.contentRect.width);
+        setFlexGap(calcGap(entry.contentRect.width));
       }
     });
-
     resizeObserver.observe(container);
-
     return () => {
       resizeObserver.disconnect();
     };
-  }, [setMainItems, content, calc]);
-
-  function calcNumOfColumns(containterWidth) {
-    let idealColumns;
-    for (let columns = 10; columns > 0; columns--) {
-      const widthOfItems = columns * 200 + (columns - 1) * 15;
-      if (widthOfItems <= containterWidth) {
-        idealColumns = columns;
-        break;
-      }
-    }
-    const leftoverSpace = containterWidth - idealColumns * 200;
-    const idealGap = leftoverSpace / (idealColumns - 1);
-    setFlexGap(idealGap);
-  }
+  }, [setItems, content, calcGap, calcPercent]);
 
   return (
     <div
       className="item grid container"
       ref={containerRef}
-      style={{ gap: `${flexGap}px` }}
+      style={gapSize}
     >
-      {mainItems.map((item) => {
+      {items.map((item) => {
         return (
-          <MainItem
+          <Item
             key={item.index}
-            name={item.title}
+            title={item.title}
             image={item.image}
-            percent={item.score}
+            score={item.score}
           />
         );
       })}
-      <OverlayWindow isOpen={isOpen} setIsOpen={setIsOpen}>
-        <AddItem type={category} />
-      </OverlayWindow>
-      <button
-        className="add"
-        onClick={() => {
-          setIsOpen(!isOpen);
-        }}
-      >
-        {isOpen ? "x" : "+"}
-      </button>
+      <CreateNewItem />
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-const MainItem = ({ name, image, percent, today }) => {
+const Item = ({ title, image, score }) => {
   const progressCircle = useRef(null);
   const svgRef = useRef(null);
 
@@ -9,12 +9,12 @@ const MainItem = ({ name, image, percent, today }) => {
     if (progressCircle.current) {
       const style = progressCircle.current.style;
       style.strokeDasharray = circumference;
-      style.strokeDashoffset = circumference - percent * circumference;
-      if (today && svgRef.current) {
+      style.strokeDashoffset = circumference - score * circumference;
+/*       if (today && svgRef.current) {
         svgRef.current.classList.add("complete");
-      }
+      } */
     }
-  }, [progressCircle, percent, today]);
+  }, [progressCircle, score]);
 
   return (
     <div className="main item">
@@ -24,9 +24,9 @@ const MainItem = ({ name, image, percent, today }) => {
           <circle ref={progressCircle} />
         </svg>
       </div>
-      <h3>{name}</h3>
+      <h3>{title}</h3>
     </div>
   );
 };
 
-export default MainItem;
+export default Item;
