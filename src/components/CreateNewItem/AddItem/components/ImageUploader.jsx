@@ -22,7 +22,7 @@ const ImageUploader = () => {
         onChange={handleChange}
       />
 
-      <img src={imagePath} alt="user image" />
+      <img src={imagePath} alt="user" />
     </div>
   );
 };
