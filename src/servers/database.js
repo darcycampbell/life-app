@@ -78,15 +78,14 @@ const queries = {
     UPDATE tasks t
     SET score = (
       WITH metrics AS (
-        SELECT 
-          initial_amount as base_score,
-          creation_date as start_date
-        FROM task_records tr
-        WHERE tr.task_id = t.id
-        LIMIT 1
+        SELECT
+          task_id,
+          PERCENT_RANK() OVER ( ORDER BY urgency_score ) as urgency_percentile
+        FROM task_records
       )
-      SELECT ((CURRENT_DATE - metrics.start_date) / t.target + base_score) / ***MAX SCORE***
+      SELECT metrics.urgency_percentile / t.target
       FROM metrics
+      WHERE metrics.task_id = t.id
     )
     RETURNING *;
   `,
@@ -113,6 +112,7 @@ app.post("/database", async (req, res) => {
 
 app.post("/upload", upload.single("image"), async (req, res) => {
   const { category, title, target } = req.body;
+  console.log(req.file);
   const file = req.file;
 
   //Find a better way to resolve these issues

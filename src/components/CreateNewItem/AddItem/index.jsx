@@ -4,22 +4,44 @@ import AddContact from "./AddContact";
 import AddGoal from "./AddGoal";
 import AddTask from "./AddTask";
 import { CategoryContext } from "../../../App";
+import useDatabase from "../../../hooks/useDatabase";
 
 const AddItem = () => {
-const category = useContext(CategoryContext);
+  const category = useContext(CategoryContext);
+  const fetchWith = useDatabase();
+
+  function handleSubmit(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const formValues = Object.fromEntries(formData);
+    fetchWith(formValues, category)
+  }
+
   if (!category) return;
+  let child;
   switch (category) {
     case "lifestyle":
-      return <AddHabit />;
+      child = <AddHabit />;
+      break;
     case "interpersonal":
-      return <AddContact />;
+      child = <AddContact />;
+      break;
     case "financial":
-      return <AddGoal />;
+      child = <AddGoal />;
+      break;
     case "external":
-      return <AddTask />;
+      child = <AddTask />;
+      break;
     default:
-      return;
+      child = <div>No category found</div>
+      break;
   }
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {child}
+    </form>
+  )
 };
 
 export default AddItem;

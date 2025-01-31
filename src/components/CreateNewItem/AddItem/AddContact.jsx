@@ -1,10 +1,10 @@
-import React from 'react'
+import React from "react";
 import NameInput from "./components/NameInput";
 import ImageUploader from "./components/ImageUploader";
 
 const AddContact = () => {
   return (
-    <form>
+    <div>
       <NameInput name={"Who do you want to stay in touch with? "} />
       <ImageUploader />
       <div>
@@ -15,8 +15,8 @@ const AddContact = () => {
       <div>
         <input type="submit" value="Add" />
       </div>
-    </form>
-  )
-}
+    </div>
+  );
+};
 
-export default AddContact
+export default AddContact;

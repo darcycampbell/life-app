@@ -1,18 +1,20 @@
 import React, { useState } from "react";
+import { Upload } from "lucide-react";
 
 const ImageUploader = () => {
-  const [imagePath, setImagePath] = useState();
-  function handleChange(event) {
+  const [preview, setPreview] = useState(null);
+
+  function handleUpload(event) {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        setImagePath(e.target.result);
+        setPreview(e.target.result);
       };
       reader.readAsDataURL(file);
     }
   }
-  return (
+/*   return (
     <div>
       <input
         type="file"
@@ -21,8 +23,36 @@ const ImageUploader = () => {
         name="filename"
         onChange={handleChange}
       />
-
       <img src={imagePath} alt="user" />
+    </div>
+  ); */
+  return (
+    <div>
+      <div>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleUpload}
+          id="image"
+          name="image"
+          // disabled={loading}
+        />
+        <label
+          htmlFor="image"
+        >
+          {preview ? (
+            <img
+              src={preview}
+              alt="Preview"
+            />
+          ) : (
+            <Upload />
+          )}
+          <span>
+            {/* loading ? 'Uploading...' : */ 'Click to upload image'}
+          </span>
+        </label>
+      </div>
     </div>
   );
 };

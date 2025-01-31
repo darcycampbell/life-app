@@ -21,7 +21,7 @@ const AddTask = () => {
   }
 
   return (
-    <form>
+    <div>
       <NameInput name={"What do you need to do? "} />
       <ImageUploader />
       <div>
@@ -59,7 +59,7 @@ const AddTask = () => {
       <div>
         <input type="submit" value="Add" />
       </div>
-    </form>
+    </div>
   );
 };
 

@@ -1,14 +1,16 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 import NameInput from "./components/NameInput";
 import ImageUploader from "./components/ImageUploader";
 
 const AddGoal = () => {
-    const [displayInfo, setDisplayInfo] = useState(false)
-    function handleClick() {
-        setDisplayInfo(!displayInfo)
-    }
+  const [displayInfo, setDisplayInfo] = useState(false);
+
+  function handleClick() {
+    setDisplayInfo(!displayInfo);
+  }
+
   return (
-    <form>
+    <div>
       <NameInput name={"What do you want to buy? "} />
       <ImageUploader />
       <div>
@@ -18,14 +20,18 @@ const AddGoal = () => {
       <div>
         <label for="value">How much do you value it? </label>
         <input type="text" name="value" id="value" />
-        <button type='button' onClick={handleClick}>?</button>
-        <p style={displayInfo ? {display: "block"} : {display: "none"}}>Choosing a number between 1 and 100 makes evaluation easier.</p>
+        <button type="button" onClick={handleClick}>
+          ?
+        </button>
+        <p style={displayInfo ? { display: "block" } : { display: "none" }}>
+          Choosing a number between 1 and 100 makes evaluation easier.
+        </p>
       </div>
       <div>
         <input type="submit" value="Add" />
       </div>
-    </form>
-  )
-}
+    </div>
+  );
+};
 
-export default AddGoal
+export default AddGoal;
