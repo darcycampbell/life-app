@@ -8,20 +8,31 @@ import "../src/css/text.css";
 import ItemGrid from "./components/ItemGrid";
 import NavBar from "./components/NavBar";
 import SiteHeader from "./components/SiteHeader";
-import React, { useState, createContext } from "react";
+import React, { useState, createContext, useEffect } from "react";
+import useDatabase from "./hooks/useDatabase";
 
+//remove context
 const CategoryContext = createContext();
 
 function App() {
-  const [page, setPage] = useState(null);
+  const fetchData = useDatabase("fetch");
+  const page = localStorage.getItem("page");
   const [data, setData] = useState(null);
+
+  useEffect(() => {
+    if (page) {
+      fetchData(page).then(data => {
+        setData(data)
+        console.log("let's stop this repeating....")
+      });
+    }
+  }, [page])
 
   return (
     <div className="app container">
       <SiteHeader />
-      <NavBar setPage={setPage} setData={setData} />
-      <CategoryContext.Provider value={page}>
-        {" "}
+      <NavBar setData={setData} />
+      <CategoryContext.Provider value={setData}>
         <div className="page container">
           {data && page ? (
             <ItemGrid content={data} />

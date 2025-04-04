@@ -2,20 +2,19 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Item from "./Item";
 import CreateNewItem from "./CreateNewItem/index";
 import useCalculator from "../hooks/useCalculator";
-import { CategoryContext } from "../App";
+//import { CategoryContext } from "../App";
 
 const ItemGrid = ({ content }) => {
+  const calcGap = useCalculator("calculate gap");
   const [items, setItems] = useState([]);
   const [flexGap, setFlexGap] = useState(15);
   const gapSize = { gap: `${flexGap}px` };
   const containerRef = useRef();
-  const category = useContext(CategoryContext);
-  const calcGap = useCalculator("calculate gap");
-  const calcPercent = useCalculator("calculate percentage");
+  const page = localStorage.getItem("page");
 
   useEffect(() => {
-    if (content) {
-      if (category === "external" || "financial") {
+    if (content && page) {
+      if (page === "external" || page === "financial") {
         setItems(content.sort((a, b) => b.score - a.score));
       } else {
         setItems(content.sort((a, b) => a.score - b.score));
@@ -32,7 +31,7 @@ const ItemGrid = ({ content }) => {
     return () => {
       resizeObserver.disconnect();
     };
-  }, [setItems, content, calcGap, calcPercent]);
+  }, [setItems, content, calcGap, page]);
 
   return (
     <div

@@ -83,7 +83,7 @@ const queries = {
           PERCENT_RANK() OVER ( ORDER BY urgency_score ) as urgency_percentile
         FROM task_records
       )
-      SELECT metrics.urgency_percentile / t.target
+      SELECT metrics.urgency_percentile * 100 / (100 - t.target)
       FROM metrics
       WHERE metrics.task_id = t.id
     )

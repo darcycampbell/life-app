@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, {useContext, useRef} from "react";
 import AddHabit from "./AddHabit";
 import AddContact from "./AddContact";
 import AddGoal from "./AddGoal";
@@ -6,20 +6,32 @@ import AddTask from "./AddTask";
 import { CategoryContext } from "../../../App";
 import useDatabase from "../../../hooks/useDatabase";
 
-const AddItem = () => {
-  const category = useContext(CategoryContext);
-  const fetchWith = useDatabase();
+const AddItem = ({setIsOpen}) => {
+  const formRef = useRef();
+  const setData = useContext(CategoryContext);
+  const postData = useDatabase("post");
+  const fetchData = useDatabase("fetch");
+  const page = localStorage.getItem("page");
+  if (!page) return;
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
     const formValues = Object.fromEntries(formData);
-    fetchWith(formValues, category)
+    postData(formValues, page).then(() => {
+      fetchData(page).then(results => {
+        console.log("this is the new data: ", results)
+        setData(results);
+      })
+    });
+    setIsOpen(false)
+    if (formRef.current) {
+      formRef.current.reset();
+    }
   }
 
-  if (!category) return;
   let child;
-  switch (category) {
+  switch (page) {
     case "lifestyle":
       child = <AddHabit />;
       break;
@@ -38,7 +50,7 @@ const AddItem = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form ref={formRef} onSubmit={handleSubmit}>
       {child}
     </form>
   )

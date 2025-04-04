@@ -9,7 +9,7 @@ const CreateNewItem = () => {
   return (
     <div>
       <OverlayWindow isOpen={isOpen} setIsOpen={setIsOpen}>
-        <AddItem />
+        <AddItem setIsOpen={setIsOpen} />
       </OverlayWindow>
       <AddButton isOpen={isOpen} setIsOpen={setIsOpen} />
     </div>
