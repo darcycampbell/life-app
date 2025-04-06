@@ -2,7 +2,7 @@ import React from "react";
 
 const NameInput = ({name}) => {
   return (
-    <div>
+    <div className="name">
       <label for="name">{name}</label>
       <input type="text" name="name" id="name" required />
     </div>
