@@ -6,6 +6,7 @@ const { S3Client, PutObjectCommand } = require("@aws-sdk/client-s3");
 //What is this for?
 const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 require("dotenv").config({ path: __dirname + `/../../.env` });
+//import dataTables from "../content/dataTables";
 
 const app = express();
 const upload = multer();
@@ -22,73 +23,11 @@ const s3Client = new S3Client({
 
 const BUCKET_NAME = process.env.AWS_BUCKET_NAME;
 
-//Move these to another file
-const tables = {
+const dataTables = {
   lifestyle: "habits",
   interpersonal: "contacts",
   financial: "goals",
   external: "tasks",
-};
-
-const queries = {
-  lifestyle: `
-    UPDATE habits h
-    SET score = (
-      WITH metrics AS (
-        SELECT 
-          AVG(entry_count)::float as record_avg
-        FROM habit_records hr
-        WHERE hr.habit_id = h.id
-      )
-      SELECT metrics.record_avg / h.target
-      FROM metrics
-    )
-    RETURNING *;
-  `,
-  interpersonal: `
-    UPDATE contacts c
-    SET score = (
-      WITH metrics AS (
-        SELECT 
-          COUNT(*) as record_count,
-          MIN(entry_date) as start_date
-        FROM contact_records cr
-        WHERE cr.contact_id = c.id
-      )
-      SELECT c.target / ((CURRENT_DATE - metrics.start_date) / metrics.record_count) 
-      FROM metrics
-    )
-    RETURNING *;
-  `,
-  financial: `
-    UPDATE goals g
-    SET score = (
-      WITH metrics AS (
-        SELECT 
-          SUM(entry_amount) as record_total
-        FROM goal_records gr
-        WHERE gr.goal_id = g.id
-      )
-      SELECT metrics.record_total / g.target
-      FROM metrics
-    )
-    RETURNING *;
-  `,
-  external: `
-    UPDATE tasks t
-    SET score = (
-      WITH metrics AS (
-        SELECT
-          task_id,
-          PERCENT_RANK() OVER ( ORDER BY urgency_score ) as urgency_percentile
-        FROM task_records
-      )
-      SELECT metrics.urgency_percentile * 100 / (100 - t.target)
-      FROM metrics
-      WHERE metrics.task_id = t.id
-    )
-    RETURNING *;
-  `,
 };
 
 const pool = new Pool({
@@ -100,9 +39,8 @@ const pool = new Pool({
 });
 
 app.post("/database", async (req, res) => {
-  const query = queries[req.body.buttonPressed];
   try {
-    const result = await pool.query(query);
+    const result = await pool.query(req.body.query);
     res.json(result.rows);
   } catch (error) {
     console.error("Error updating habit scores:", error);
@@ -128,11 +66,11 @@ app.post("/upload", upload.single("image"), async (req, res) => {
     return res.status(400).json({ error: "Invalid file type" });
   }
 
-  if (!tables[category]) {
+  if (!dataTables[category]) {
     return res.status(400).json({ error: "Invalid category" });
   }
 
-  const table = tables[category];
+  const table = dataTables[category];
   const filename = `${Date.now()}-${file.originalname}`;
 
   try {

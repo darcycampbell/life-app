@@ -1,10 +1,16 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 //import { Upload } from "lucide-react";
 
-const ImageUploader = () => {
+const ImageUploader = ({ value }) => {
   const imageURL = "/square-no-background-upload.png";
   const [preview, setPreview] = useState(imageURL);
   const inputRef = useRef();
+
+  useEffect(() => {
+    if (value) {
+      setPreview(value);
+    }
+  }, [value])
 
   function handleClick(event) {
     event.preventDefault()

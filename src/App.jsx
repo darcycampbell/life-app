@@ -21,9 +21,9 @@ function App() {
 
   useEffect(() => {
     if (page) {
-      fetchData(page).then(data => {
+      fetchData(null, page).then(data => {
+        console.log("this is data: ", data)
         setData(data)
-        console.log("let's stop this repeating....")
       });
     }
   }, [page])

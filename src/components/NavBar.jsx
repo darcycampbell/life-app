@@ -6,7 +6,7 @@ const NavBar = ({ setData }) => {
   
   function handleClick(event) {
     const buttonText = event.target.innerHTML.toLowerCase()
-    fetchData(buttonText).then(data => {
+    fetchData(null, buttonText).then(data => {
       setData(data);
     });
     localStorage.setItem("page", buttonText);

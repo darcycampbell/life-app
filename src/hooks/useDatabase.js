@@ -1,3 +1,6 @@
+import tableQueries from "../content/tableQueries";
+import dataTables from "../content/dataTables";
+
 const useDatabase = (object) => {
   switch (object) {
     case "post":
@@ -32,15 +35,23 @@ const useDatabase = (object) => {
         }
       };
     case "fetch":
-      return async (page) => {
+      return async (item, page) => {
+        let query;
         let responseJSON;
+        
+        if (item) {
+          query = `SELECT * FROM ${dataTables[page]} WHERE id = ${item};`
+        } else {
+          query = tableQueries[page]
+        }
+        
         try {
           const response = await fetch("http://localhost:3001/database", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ buttonPressed: page }),
+            body: JSON.stringify({ query: query }),
           });
           if (!response.ok) {
             throw new Error("Database connection failed");

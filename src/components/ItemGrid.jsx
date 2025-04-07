@@ -42,7 +42,8 @@ const ItemGrid = ({ content }) => {
       {items.map((item) => {
         return (
           <Item
-            key={item.index}
+            key={item.id}
+            index={item.id}
             title={item.title}
             image={item.image}
             score={item.score}

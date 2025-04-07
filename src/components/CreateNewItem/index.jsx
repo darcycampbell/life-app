@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import OverlayWindow from "./OverlayWindow";
-import AddItem from "./AddItem/index";
+import OverlayWindow from "../General/OverlayWindow";
+import AddItem from "./AddItem";
 import AddButton from "./AddButton";
 
 const CreateNewItem = () => {
