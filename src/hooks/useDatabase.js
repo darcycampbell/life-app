@@ -1,12 +1,12 @@
 import tableQueries from "../content/tableQueries";
 import dataTables from "../content/dataTables";
+import dataRecordTables from "../content/dataRecordTables";
 
 const useDatabase = (object) => {
   switch (object) {
     case "post":
       return async (formValues, category) => {
         const newData = new FormData();
-        console.log(formValues);
         newData.append("title", formValues.name);
         newData.append("image", formValues.image);
         newData.append("target", formValues.target);
@@ -35,16 +35,40 @@ const useDatabase = (object) => {
         }
       };
     case "fetch":
-      return async (item, page) => {
+      return async (page, item) => {
         let query;
         let responseJSON;
-        
+
         if (item) {
-          query = `SELECT * FROM ${dataTables[page]} WHERE id = ${item};`
+          query = `SELECT * FROM ${dataTables[page]} WHERE id = ${item};`;
         } else {
-          query = tableQueries[page]
+          query = tableQueries[page];
         }
-        
+
+        try {
+          const response = await fetch("http://localhost:3001/database", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ query: query }),
+          });
+          if (!response.ok) {
+            throw new Error("Database connection failed");
+          }
+          responseJSON = await response.json();
+          return responseJSON;
+        } catch (err) {
+          console.error("Error fetching data:", err);
+          // You might want to return something to indicate an error occurred
+          return { error: err.message };
+        }
+      };
+    case "delete":
+      return async (page, item) => {
+        let responseJSON;
+        const query = `DELETE FROM ${dataRecordTables[page]} WHERE ${dataTables[page].slice(0, -1) + "_id"} = ${item}; 
+        DELETE FROM ${dataTables[page]} WHERE id = ${item};`;
         try {
           const response = await fetch("http://localhost:3001/database", {
             method: "POST",

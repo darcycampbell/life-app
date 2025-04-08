@@ -5,45 +5,17 @@ import "../src/css/form.css";
 import "../src/css/item.css";
 import "../src/css/overlay.css";
 import "../src/css/text.css";
-import ItemGrid from "./components/ItemGrid";
-import NavBar from "./components/NavBar";
-import SiteHeader from "./components/SiteHeader";
-import React, { useState, createContext, useEffect } from "react";
-import useDatabase from "./hooks/useDatabase";
+import React from "react";
+import { DataProvider } from "./content/DataContext";
+import Main from "./components/Main";
 
-//remove context
-const CategoryContext = createContext();
 
 function App() {
-  const fetchData = useDatabase("fetch");
-  const page = localStorage.getItem("page");
-  const [data, setData] = useState(null);
-
-  useEffect(() => {
-    if (page) {
-      fetchData(null, page).then(data => {
-        console.log("this is data: ", data)
-        setData(data)
-      });
-    }
-  }, [page])
-
   return (
-    <div className="app container">
-      <SiteHeader />
-      <NavBar setData={setData} />
-      <CategoryContext.Provider value={setData}>
-        <div className="page container">
-          {data && page ? (
-            <ItemGrid content={data} />
-          ) : (
-            <h2>Open a page</h2>
-          )}
-        </div>
-      </CategoryContext.Provider>
-    </div>
+    <DataProvider>
+      <Main />
+    </DataProvider>
   );
 }
 
-export {CategoryContext};
 export default App;

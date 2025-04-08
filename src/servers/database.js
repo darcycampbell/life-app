@@ -50,7 +50,6 @@ app.post("/database", async (req, res) => {
 
 app.post("/upload", upload.single("image"), async (req, res) => {
   const { category, title, target } = req.body;
-  console.log(req.file);
   const file = req.file;
 
   //Find a better way to resolve these issues

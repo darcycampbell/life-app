@@ -1,14 +1,12 @@
 import React from "react";
-import useDatabase from "../hooks/useDatabase";
+import { useData } from "../content/DataContext";
 
-const NavBar = ({ setData }) => {
-  const fetchData = useDatabase("fetch");
+const NavBar = () => {
+  const { refreshData } = useData()
   
   function handleClick(event) {
     const buttonText = event.target.innerHTML.toLowerCase()
-    fetchData(null, buttonText).then(data => {
-      setData(data);
-    });
+    refreshData(buttonText)
     localStorage.setItem("page", buttonText);
   }
 

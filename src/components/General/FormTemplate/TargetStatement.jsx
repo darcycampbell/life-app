@@ -6,7 +6,7 @@ const TargetStatement = ({ text1, text2, value }) => {
       <label for="target">
         {text1}
         <span>
-          <input type="text" name="target" placeholder={value} id="target" required />
+          <input type="text" name="target" placeholder={value} id="target" />
         </span>
         {text2}
       </label>

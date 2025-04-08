@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Item from "./Item";
 import CreateNewItem from "./CreateNewItem/index";
 import useCalculator from "../hooks/useCalculator";
-//import { CategoryContext } from "../App";
+import { useData } from "../content/DataContext";
 
-const ItemGrid = ({ content }) => {
+const ItemGrid = () => {
+  const { data } = useData()
   const calcGap = useCalculator("calculate gap");
   const [items, setItems] = useState([]);
   const [flexGap, setFlexGap] = useState(15);
@@ -13,11 +14,13 @@ const ItemGrid = ({ content }) => {
   const page = localStorage.getItem("page");
 
   useEffect(() => {
-    if (content && page) {
+    const content = data;
+    console.log("this is content: ", content)
+    if (data && page) {
       if (page === "external" || page === "financial") {
-        setItems(content.sort((a, b) => b.score - a.score));
+        setItems(data.sort((a, b) => b.score - a.score));
       } else {
-        setItems(content.sort((a, b) => a.score - b.score));
+        setItems(data.sort((a, b) => a.score - b.score));
       }
     }
     const container = containerRef.current;
@@ -31,7 +34,7 @@ const ItemGrid = ({ content }) => {
     return () => {
       resizeObserver.disconnect();
     };
-  }, [setItems, content, calcGap, page]);
+  }, [setItems, data, calcGap, page]);
 
   return (
     <div

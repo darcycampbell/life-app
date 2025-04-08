@@ -4,6 +4,7 @@ import AddItem from "./AddItem";
 import AddButton from "./AddButton";
 
 const CreateNewItem = () => {
+  //should create a context?
   const [isOpen, setIsOpen] = useState(false);
 
   return (
