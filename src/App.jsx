@@ -7,8 +7,7 @@ import "../src/css/overlay.css";
 import "../src/css/text.css";
 import React from "react";
 import { DataProvider } from "./content/DataContext";
-import Main from "./components/Main";
-
+import Main from "./components/Main/index";
 
 function App() {
   return (

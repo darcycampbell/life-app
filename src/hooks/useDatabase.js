@@ -1,96 +1,45 @@
-import tableQueries from "../content/tableQueries";
-import dataTables from "../content/dataTables";
-import dataRecordTables from "../content/dataRecordTables";
+import { useCallback } from "react";
 
-const useDatabase = (object) => {
-  switch (object) {
-    case "post":
-      return async (formValues, category) => {
-        const newData = new FormData();
-        newData.append("title", formValues.name);
-        newData.append("image", formValues.image);
-        newData.append("target", formValues.target);
-        newData.append("category", category);
+function useDatabase() {
+  console.log("use database running at", new Date().toISOString())
+  return useCallback(async (command, data) => {
+    console.log("get data runnning at", new Date().toISOString())
+    let URL;
+    let object;
 
-        try {
-          //setLoading(true);
-
-          //I guess this needs a response to check if the upload was successful
-          const response = await fetch("http://localhost:3001/upload", {
-            method: "POST",
-            body: newData,
-          });
-
-          if (!response.ok) {
-            throw new Error(`Upload failed with status: ${response.status}`);
-          }
-          const data = await response.json();
-          return data;
-        } catch (error) {
-          console.error("Upload error:", error);
-          console.log(error);
-          alert("Upload failed. Please try again.");
-        } finally {
-          //setLoading(false);
-        }
+    if (command === "upload") {
+      URL = "http://localhost:3001/upload";
+      object = {
+        method: "POST",
+        body: data,
       };
-    case "fetch":
-      return async (page, item) => {
-        let query;
-        let responseJSON;
-
-        if (item) {
-          query = `SELECT * FROM ${dataTables[page]} WHERE id = ${item};`;
-        } else {
-          query = tableQueries[page];
-        }
-
-        try {
-          const response = await fetch("http://localhost:3001/database", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ query: query }),
-          });
-          if (!response.ok) {
-            throw new Error("Database connection failed");
-          }
-          responseJSON = await response.json();
-          return responseJSON;
-        } catch (err) {
-          console.error("Error fetching data:", err);
-          // You might want to return something to indicate an error occurred
-          return { error: err.message };
-        }
+    } else if (command === "database") {
+      URL = "http://localhost:3001/database";
+      object = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query: data }),
       };
-    case "delete":
-      return async (page, item) => {
-        let responseJSON;
-        const query = `DELETE FROM ${dataRecordTables[page]} WHERE ${dataTables[page].slice(0, -1) + "_id"} = ${item}; 
-        DELETE FROM ${dataTables[page]} WHERE id = ${item};`;
-        try {
-          const response = await fetch("http://localhost:3001/database", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ query: query }),
-          });
-          if (!response.ok) {
-            throw new Error("Database connection failed");
-          }
-          responseJSON = await response.json();
-          return responseJSON;
-        } catch (err) {
-          console.error("Error fetching data:", err);
-          // You might want to return something to indicate an error occurred
-          return { error: err.message };
-        }
-      };
-    default:
-      console.log("Something went wrong with useDatabase");
-  }
+    } else {
+      alert("invalid command: ", command);
+      return;
+    }
+
+    try {
+      const response = await fetch(URL, object);
+      if (!response.ok) {
+        throw new Error(`Upload failed with status: ${response.status}`);
+      }
+      const responseJSON = await response.json();
+      return responseJSON;
+    } catch (error) {
+      console.error("Upload error:", error);
+      console.log(error);
+      alert("Upload failed. Please try again.");
+    }
+  }, [])
 };
 
 export default useDatabase;

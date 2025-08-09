@@ -1,24 +1,30 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useContext, useCallback } from 'react';
 import useDatabase from '../hooks/useDatabase';
+import useQuery from '../hooks/useQuery';
 
 const DataContext = createContext();
 
 export function DataProvider({ children }) {
+  const getData = useDatabase();
+  const getQuery = useQuery();
   const [data, setData] = useState([]);
-  const fetchData = useDatabase("fetch");
+  const [page, setPage] = useState()
   
-  const updateData = (newData) => {
+/*   const updateData = (newData) => {
     setData([...data, newData]);
-  };
+  }; */
   
-  const refreshData = async (page, index) => {
-    fetchData(page, index).then(results => {
+  const refreshData = useCallback(async () => {
+    console.log("this is page in datacontext:", page)
+    const query = getQuery("all", [ page ])
+    console.log("this is query:", query)
+    getData("database", query).then(results => {
         setData(results)
     })
-  };
+  }, [page])
 
   return (
-    <DataContext.Provider value={{ data, setData, updateData, refreshData }}>
+    <DataContext.Provider value={{ data, setData, page, setPage, refreshData }}>
       {children}
     </DataContext.Provider>
   );

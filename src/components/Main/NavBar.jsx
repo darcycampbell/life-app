@@ -1,15 +1,15 @@
 import React from "react";
-import { useData } from "../content/DataContext";
+import { useData } from "../../content/DataContext";
 
 const NavBar = () => {
-  const { refreshData } = useData()
+  const { setPage } = useData()
   
   function handleClick(event) {
     const buttonText = event.target.innerHTML.toLowerCase()
-    refreshData(buttonText)
-    localStorage.setItem("page", buttonText);
+    setPage(buttonText)
   }
 
+  //highlight button based on "page" value
   return (
     <div className="nav buttons container">
       <button onClick={handleClick}>Lifestyle</button>

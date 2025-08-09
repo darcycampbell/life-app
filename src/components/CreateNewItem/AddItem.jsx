@@ -1,14 +1,13 @@
 import React, { useRef } from "react";
 import FormTemplate from "../General/FormTemplate";
-import useDatabase from "../../hooks/useDatabase";
 import formContent from "../../content/formContent";
 import { useData } from "../../content/DataContext";
+//import useDatabase from "../../hooks/useDatabase";
 
 const AddItem = ({ setIsOpen }) => {
-  const { refreshData } = useData();
+  //const { getData } = useDatabase();
+  const { page, refreshData } = useData();
   const formRef = useRef();
-  const postData = useDatabase("post");
-  const page = localStorage.getItem("page");
   if (!page) return;
   //if the page is global information, I shouldn't have to pass this through, right?
   const input = formContent[page];
@@ -17,9 +16,15 @@ const AddItem = ({ setIsOpen }) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const formValues = Object.fromEntries(formData);
+    const newData = new FormData();
+    newData.append("title", formValues.name);
+    newData.append("image", formValues.image);
+    newData.append("target", formValues.target);
+    newData.append("category", page);
     //I wonder if there is a way to handle this through useData
-    postData(formValues, page);
-    refreshData(page);
+    //Add a loading
+    //getData("upload", newData);
+    //refreshData();
     if (formRef.current) {
       formRef.current.reset();
     }

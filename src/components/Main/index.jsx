@@ -2,17 +2,16 @@ import React, { useEffect } from "react";
 import SiteHeader from "./SiteHeader";
 import NavBar from "./NavBar";
 import ItemGrid from "./ItemGrid";
-import { useData } from "../content/DataContext";
+import { useData } from "../../content/DataContext";
 
 const Main = () => {
-  const { data, refreshData } = useData();
-  const page = localStorage.getItem("page");
+  const { data, page, refreshData } = useData();
 
   useEffect(() => {
     if (page) {
-      refreshData(page);
+      refreshData();
     }
-  }, [page, refreshData]);
+  }, [page]);
 
   return (
     <div className="app container">
