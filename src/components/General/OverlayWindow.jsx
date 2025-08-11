@@ -1,21 +1,21 @@
-import React from "react";
+import { useModal } from "../../contexts/ModalContext";
 
-const OverlayWindow = ({ isOpen, setIsOpen, children }) => {
-  const displaySetting = [{ display: "none" }, { display: "flex" }];
+const OverlayWindow = ({ children }) => {
+  const { isOpen, closeModal } = useModal();
 
   function handleClick(event) {
     if (event.target === event.currentTarget) {
-      setIsOpen(false);
+      closeModal();
     }
   }
 
   return (
     <div
       className="overlay container"
-      style={isOpen ? displaySetting[1] : displaySetting[0]}
+      style={{ display: isOpen ? 'flex' : 'none' }}
       onClick={handleClick}
     >
-      <div className="content container">{children}</div>
+      <div className="content container">{isOpen && children}</div>
     </div>
   );
 };

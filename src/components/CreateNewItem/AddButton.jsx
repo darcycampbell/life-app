@@ -1,11 +1,14 @@
 import React from 'react'
+import { useModal } from '../../contexts/ModalContext';
 
-const AddButton = ({isOpen, setIsOpen}) => {
+const AddButton = () => {
+  const { isOpen, toggleModal } = useModal();
+
   return (
     <button
         className="add"
         onClick={() => {
-          setIsOpen(!isOpen);
+          toggleModal();
         }}
       >
         {isOpen ? "x" : "+"}

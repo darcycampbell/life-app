@@ -35,7 +35,7 @@ const ImageUploader = ({ value }) => {
   return (
     <div className="upload">
       <img src={preview} alt="Preview" />
-      <button onClick={handleClick}>Upload image</button>
+      <button type="button" onClick={handleClick}>Upload image</button>
       <input
         type="file"
         accept="image/*"

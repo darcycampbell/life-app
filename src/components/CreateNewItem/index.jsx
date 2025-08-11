@@ -1,19 +1,18 @@
-import React, { useState } from "react";
 import OverlayWindow from "../General/OverlayWindow";
 import AddItem from "./AddItem";
 import AddButton from "./AddButton";
+import { ModalProvider } from "../../contexts/ModalContext";
 
 const CreateNewItem = () => {
-  //should create a context?
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
-    <div>
-      <OverlayWindow isOpen={isOpen} setIsOpen={setIsOpen}>
-        <AddItem setIsOpen={setIsOpen} />
-      </OverlayWindow>
-      <AddButton isOpen={isOpen} setIsOpen={setIsOpen} />
-    </div>
+    <ModalProvider>
+      <div>
+        <OverlayWindow>
+          <AddItem />
+        </OverlayWindow>
+        <AddButton />
+      </div>
+    </ModalProvider>
   );
 };
 

@@ -3,9 +3,11 @@ import FormTemplate from "../General/FormTemplate";
 import formContent from "../../content/formContent";
 import { useData } from "../../content/DataContext";
 //import useDatabase from "../../hooks/useDatabase";
+import { useModal } from "../../contexts/ModalContext";
 
-const AddItem = ({ setIsOpen }) => {
+const AddItem = () => {
   //const { getData } = useDatabase();
+  const { closeModal } = useModal()
   const { page, refreshData } = useData();
   const formRef = useRef();
   if (!page) return;
@@ -28,7 +30,7 @@ const AddItem = ({ setIsOpen }) => {
     if (formRef.current) {
       formRef.current.reset();
     }
-    setIsOpen(false);
+    closeModal();
   }
 
   return (

@@ -1,10 +1,12 @@
 import React, { useEffect, useRef } from "react";
 import useQuery from "../../hooks/useQuery";
 import { useData } from "../../content/DataContext";
+import { useModal } from "../../contexts/ModalContext";
 
-const ItemObject = ({ item, setIsOpen }) => {
+const ItemObject = ({ item }) => {
   const progressCircle = useRef(null);
   const svgRef = useRef(null);
+  const { openModal } = useModal();
   const { page } = useData();
   const getQuery = useQuery();
 
@@ -22,7 +24,7 @@ const ItemObject = ({ item, setIsOpen }) => {
 
   function handleRightClick(event) {
     event.preventDefault();
-    setIsOpen(true);
+    openModal();
     if (page) {
       const query = getQuery("item", [page, item.index]);
       /* getData("database", query).then((data) => {

@@ -5,12 +5,14 @@ import { useData } from "../../content/DataContext";
 import useQuery from "../../hooks/useQuery";
 import dataTables from "../../content/dataTables";
 import formContent from "../../content/formContent";
+import { useModal } from "../../contexts/ModalContext";
 
-const ItemForm = ({ item, isOpen, setIsOpen }) => {
+const ItemForm = ({ item }) => {
   const [formData, setFormData] = useState(null);
   const [input, setInput] = useState(["", "", ""]);
   const [itemType, setItemType] = useState(null);
   const {page} = useData()
+  const { closeModal } = useModal()
   const getQuery = useQuery()
 
   useEffect(() => {
@@ -22,7 +24,7 @@ const ItemForm = ({ item, isOpen, setIsOpen }) => {
 
   function handleSubmit(event) {
     event.preventDefault();
-    setIsOpen(false);
+    closeModal();
     const buttonValue = event.nativeEvent.submitter.value;
     if (page) {
       if (buttonValue === "delete") {
@@ -36,10 +38,16 @@ const ItemForm = ({ item, isOpen, setIsOpen }) => {
     }
   }
 
+  function handleEnter(event) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+    }
+  }
+
   return (
     <div>
-      <OverlayWindow isOpen={isOpen} setIsOpen={setIsOpen}>
-        <form onSubmit={handleSubmit}>
+      <OverlayWindow>
+        <form onSubmit={handleSubmit} onKeyDown={handleEnter} >
           <FormTemplate
             defaultText={[`Edit ${itemType}`, input[1], input[2]]}
             formData={formData}
