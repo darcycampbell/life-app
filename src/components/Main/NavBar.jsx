@@ -1,12 +1,13 @@
 import React from "react";
-import { useData } from "../../content/DataContext";
+import { useData } from "../../contexts/DataContext";
 
 const NavBar = () => {
-  const { setPage } = useData()
+  const { setPage, setUpdate } = useData()
   
   function handleClick(event) {
     const buttonText = event.target.innerHTML.toLowerCase()
     setPage(buttonText)
+    setUpdate(true)
   }
 
   //highlight button based on "page" value

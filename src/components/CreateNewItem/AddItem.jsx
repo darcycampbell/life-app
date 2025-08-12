@@ -1,14 +1,14 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import FormTemplate from "../General/FormTemplate";
 import formContent from "../../content/formContent";
-import { useData } from "../../content/DataContext";
-//import useDatabase from "../../hooks/useDatabase";
+import { useData } from "../../contexts/DataContext";
 import { useModal } from "../../contexts/ModalContext";
+import { uploadData } from "../../utils/dataUtils";
+import { compressImage } from "../../utils/imageUtils";
 
 const AddItem = () => {
-  //const { getData } = useDatabase();
   const { closeModal } = useModal()
-  const { page, refreshData } = useData();
+  const { page, setUpdate } = useData();
   const formRef = useRef();
   if (!page) return;
   //if the page is global information, I shouldn't have to pass this through, right?
@@ -16,21 +16,22 @@ const AddItem = () => {
 
   async function handleSubmit(event) {
     event.preventDefault();
+    closeModal();
     const formData = new FormData(event.target);
     const formValues = Object.fromEntries(formData);
     const newData = new FormData();
     newData.append("title", formValues.name);
+    //const compressedImage = await compressImage(formValues.image);
     newData.append("image", formValues.image);
     newData.append("target", formValues.target);
     newData.append("category", page);
-    //I wonder if there is a way to handle this through useData
-    //Add a loading
-    //getData("upload", newData);
-    //refreshData();
+    console.log("before uploadRequest")
+    await uploadData(newData);
+    console.log("after uploadRequest")
+    setUpdate(true);
     if (formRef.current) {
       formRef.current.reset();
     }
-    closeModal();
   }
 
   return (

@@ -1,15 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Item from "../Item";
 import CreateNewItem from "../CreateNewItem/index";
-import useCalculator from "../../hooks/useCalculator";
-import { useData } from "../../content/DataContext";
+import { calcGap } from "../../utils/calcUtils";
+import { useData } from "../../contexts/DataContext";
 
 const ItemGrid = () => {
   const [items, setItems] = useState([]);
   const [flexGap, setFlexGap] = useState(15);
   const containerRef = useRef();
   const { data, page } = useData()
-  const calcGap = useCalculator("calculate gap");
   const gapSize = { gap: `${flexGap}px` };
 
   useEffect(() => {

@@ -1,9 +1,6 @@
-import dataRecordTables from "../content/dataRecordTables";
-import dataTables from "../content/dataTables";
-import tableQueries from "../content/tableQueries";
-import { useCallback } from "react";
 
-const useQuery = () => {
+
+/* const  = () => {
   return useCallback((command, data) => {
     let query;
     const [page = undefined, item = undefined] = data;
@@ -35,4 +32,5 @@ const useQuery = () => {
   }, [])
 };
 
-export default useQuery;
+export default ;
+ */

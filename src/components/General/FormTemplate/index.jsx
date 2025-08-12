@@ -12,7 +12,7 @@ const FormTemplate = ({ defaultText, formData }) => {
 
   useEffect(() => {
     if (formData) {
-      setNameValue(formData.name);
+      setNameValue(formData.title);
       setImageValue(formData.image);
       setTargetValue(formData.target);
       setShowDelete(true);

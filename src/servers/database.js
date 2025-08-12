@@ -41,7 +41,14 @@ const pool = new Pool({
 app.post("/database", async (req, res) => {
   try {
     const result = await pool.query(req.body.query);
-    res.json(result.rows);
+    if (result.rows) {
+      res.json(result.rows);
+    } else if (Array.isArray(result)) {
+      const queryResults = result.map((r) => r.rows || []);
+      res.json(queryResults);
+    } else {
+      res.json({ success: true });
+    }
   } catch (error) {
     console.error("Error updating habit scores:", error);
     throw error;
@@ -51,6 +58,8 @@ app.post("/database", async (req, res) => {
 app.post("/upload", upload.single("image"), async (req, res) => {
   const { category, title, target } = req.body;
   const file = req.file;
+
+  console.log("Upload started, file size:", file.size);
 
   //Find a better way to resolve these issues
   if (!file) {
@@ -74,6 +83,7 @@ app.post("/upload", upload.single("image"), async (req, res) => {
 
   try {
     try {
+      const s3StartTime = Date.now();
       const command = new PutObjectCommand({
         Bucket: BUCKET_NAME,
         Key: filename,
@@ -81,17 +91,20 @@ app.post("/upload", upload.single("image"), async (req, res) => {
         ContentType: file.mimetype,
       });
       await s3Client.send(command);
+      console.log("S3 upload took:", Date.now() - s3StartTime, "ms");
     } catch (s3Error) {
       console.error("S3 upload failed:", s3Error);
       return res.status(500).json({ error: "File upload to S3 failed" });
     }
 
     //Does this need to be here (not earlier)?
-    const image = `https://${BUCKET_NAME}.s3.amazonaws.com/${filename}`; 
-    
+    const image = `https://${BUCKET_NAME}.s3.amazonaws.com/${filename}`;
+
     try {
+      const dbStartTime = Date.now();
       const query = `INSERT INTO "${table}" (title, image, target) VALUES ($1, $2, $3)`;
       await pool.query(query, [title, image, target]);
+      console.log("DB insert took:", Date.now() - dbStartTime, "ms");
     } catch (dbError) {
       console.error("Database insert failed:", dbError);
       // You might want to delete the S3 file here since the DB insert failed
@@ -100,7 +113,6 @@ app.post("/upload", upload.single("image"), async (req, res) => {
 
     //Do I need this?
     res.json({ success: true, image });
-    
   } catch (error) {
     console.error("General error:", error);
     res.status(500).json({ error: "Upload failed", details: error.message });

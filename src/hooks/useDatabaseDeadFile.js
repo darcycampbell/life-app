@@ -1,6 +1,10 @@
-import { useCallback } from "react";
+// services/api.js
 
-function useDatabase() {
+
+
+/* import { useCallback } from "react";
+
+function () {
   console.log("use database running at", new Date().toISOString())
   return useCallback(async (command, data) => {
     console.log("get data runnning at", new Date().toISOString())
@@ -42,4 +46,4 @@ function useDatabase() {
   }, [])
 };
 
-export default useDatabase;
+export default ; */

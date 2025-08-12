@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import OverlayWindow from "../General/OverlayWindow";
 import FormTemplate from "../General/FormTemplate";
-import { useData } from "../../content/DataContext";
-import useQuery from "../../hooks/useQuery";
+import { useData } from "../../contexts/DataContext";
 import dataTables from "../../content/dataTables";
 import formContent from "../../content/formContent";
 import { useModal } from "../../contexts/ModalContext";
+import { getDeleteItemQuery } from "../../utils/queryUtils";
+import { queryDatabase } from "../../utils/dataUtils";
 
 const ItemForm = ({ item }) => {
-  const [formData, setFormData] = useState(null);
+  //const [formData, setFormData] = useState(null);
   const [input, setInput] = useState(["", "", ""]);
   const [itemType, setItemType] = useState(null);
-  const {page} = useData()
-  const { closeModal } = useModal()
-  const getQuery = useQuery()
+  const { page, setUpdate } = useData();
+  const { closeModal } = useModal();
 
   useEffect(() => {
     if (page) {
@@ -22,24 +22,25 @@ const ItemForm = ({ item }) => {
     }
   }, [page]);
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
     closeModal();
     const buttonValue = event.nativeEvent.submitter.value;
     if (page) {
       if (buttonValue === "delete") {
-        const query = getQuery("delete_item", [page, item.index]);
-        //getData("database", query)
+        const query = getDeleteItemQuery([page, item.id]);
+        await queryDatabase(query);
+        setUpdate(true);
       } else if (buttonValue === "done") {
         const formData = new FormData(event.target);
         const formValues = Object.fromEntries(formData);
-        //console.log("this is form values: ", formValues)
+        console.log("this is form values: ", formValues)
       }
     }
   }
 
   function handleEnter(event) {
-    if (event.key === 'Enter') {
+    if (event.key === "Enter") {
       event.preventDefault();
     }
   }
@@ -47,10 +48,10 @@ const ItemForm = ({ item }) => {
   return (
     <div>
       <OverlayWindow>
-        <form onSubmit={handleSubmit} onKeyDown={handleEnter} >
+        <form onSubmit={handleSubmit} onKeyDown={handleEnter}>
           <FormTemplate
             defaultText={[`Edit ${itemType}`, input[1], input[2]]}
-            formData={formData}
+            formData={item}
           />
         </form>
       </OverlayWindow>

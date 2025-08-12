@@ -1,14 +1,13 @@
 import React, { useEffect, useRef } from "react";
-import useQuery from "../../hooks/useQuery";
-import { useData } from "../../content/DataContext";
+import { useData } from "../../contexts/DataContext";
 import { useModal } from "../../contexts/ModalContext";
+import { getSelectItemQuery } from "../../utils/queryUtils";
 
 const ItemObject = ({ item }) => {
   const progressCircle = useRef(null);
   const svgRef = useRef(null);
   const { openModal } = useModal();
   const { page } = useData();
-  const getQuery = useQuery();
 
   useEffect(() => {
     const circumference = 2 * Math.PI * 95;
@@ -26,7 +25,7 @@ const ItemObject = ({ item }) => {
     event.preventDefault();
     openModal();
     if (page) {
-      const query = getQuery("item", [page, item.index]);
+      const query = getSelectItemQuery([page, item.index]);
       /* getData("database", query).then((data) => {
             const item = data[0];
             const object = {

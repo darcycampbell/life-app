@@ -2,16 +2,18 @@ import React, { useEffect } from "react";
 import SiteHeader from "./SiteHeader";
 import NavBar from "./NavBar";
 import ItemGrid from "./ItemGrid";
-import { useData } from "../../content/DataContext";
+import { useData } from "../../contexts/DataContext";
 
 const Main = () => {
-  const { data, page, refreshData } = useData();
+  const { data, page, update, setUpdate, refreshData } = useData();
 
   useEffect(() => {
-    if (page) {
+    if (page && update) {
+      console.log("refreshData is triggered!!!!")
       refreshData();
+      setUpdate(false);
     }
-  }, [page]);
+  }, [page, update]);
 
   return (
     <div className="app container">

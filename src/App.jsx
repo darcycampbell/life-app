@@ -5,8 +5,7 @@ import "../src/css/form.css";
 import "../src/css/item.css";
 import "../src/css/overlay.css";
 import "../src/css/text.css";
-import React from "react";
-import { DataProvider } from "./content/DataContext";
+import { DataProvider } from "./contexts/DataContext";
 import Main from "./components/Main/index";
 
 function App() {
