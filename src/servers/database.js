@@ -56,22 +56,23 @@ app.post("/database", async (req, res) => {
 });
 
 app.post("/upload", upload.single("image"), async (req, res) => {
-  const { category, title, target } = req.body;
+  const { category, title, target, id } = req.body;
   const file = req.file;
+  const isUpdate = Boolean(id);
 
-  console.log("Upload started, file size:", file.size);
-
-  //Find a better way to resolve these issues
-  if (!file) {
-    return res.status(400).json({ error: "No file uploaded" });
+  if (!isUpdate) {
+    if (!file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+    if (!category || !title || !target) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
   }
 
-  if (!category || !title || !target) {
-    return res.status(400).json({ error: "Missing required fields" });
-  }
-
-  if (!["image/jpeg", "image/png", "image/gif"].includes(file.mimetype)) {
-    return res.status(400).json({ error: "Invalid file type" });
+  if (file) {
+    if (!["image/jpeg", "image/png", "image/gif"].includes(file.mimetype)) {
+      return res.status(400).json({ error: "Invalid file type" });
+    }
   }
 
   if (!dataTables[category]) {
@@ -79,10 +80,11 @@ app.post("/upload", upload.single("image"), async (req, res) => {
   }
 
   const table = dataTables[category];
-  const filename = `${Date.now()}-${file.originalname}`;
+  let imageUrl;
 
   try {
-    try {
+    if (file) {
+      const filename = `${Date.now()}-${file.originalname}`;
       const s3StartTime = Date.now();
       const command = new PutObjectCommand({
         Bucket: BUCKET_NAME,
@@ -92,30 +94,63 @@ app.post("/upload", upload.single("image"), async (req, res) => {
       });
       await s3Client.send(command);
       console.log("S3 upload took:", Date.now() - s3StartTime, "ms");
-    } catch (s3Error) {
-      console.error("S3 upload failed:", s3Error);
-      return res.status(500).json({ error: "File upload to S3 failed" });
+      imageUrl = `https://${BUCKET_NAME}.s3.amazonaws.com/${filename}`;
     }
 
-    //Does this need to be here (not earlier)?
-    const image = `https://${BUCKET_NAME}.s3.amazonaws.com/${filename}`;
+    // Database operation
+    const dbStartTime = Date.now();
+    let query, params;
 
-    try {
-      const dbStartTime = Date.now();
-      const query = `INSERT INTO "${table}" (title, image, target) VALUES ($1, $2, $3)`;
-      await pool.query(query, [title, image, target]);
-      console.log("DB insert took:", Date.now() - dbStartTime, "ms");
-    } catch (dbError) {
-      console.error("Database insert failed:", dbError);
-      // You might want to delete the S3 file here since the DB insert failed
-      return res.status(500).json({ error: "Database update failed" });
+    if (isUpdate) {
+      const updateFields = [];
+      const updateValues = [];
+      let paramCount = 1;
+
+      if (title) {
+        updateFields.push(`title = $${paramCount++}`);
+        updateValues.push(title);
+      }
+
+      if (target) {
+        updateFields.push(`target = $${paramCount++}`);
+        updateValues.push(target);
+      }
+
+      if (imageUrl) {
+        updateFields.push(`image = $${paramCount++}`);
+        updateValues.push(imageUrl);
+      }
+
+      updateValues.push(id);
+      query = `UPDATE "${table}" SET ${updateFields.join(
+        ", "
+      )} WHERE id = $${paramCount}`;
+      params = updateValues;
+    } else {
+      query = `INSERT INTO "${table}" (title, image, target) VALUES ($1, $2, $3)`;
+      params = [title, imageUrl, target];
     }
 
-    //Do I need this?
-    res.json({ success: true, image });
+    await pool.query(query, params);
+    console.log(
+      `DB ${isUpdate ? "update" : "insert"} took:`,
+      Date.now() - dbStartTime,
+      "ms"
+    );
+
+    res.json({
+      success: true,
+      ...(imageUrl && { image: imageUrl }),
+      action: isUpdate ? "updated" : "created",
+    });
   } catch (error) {
-    console.error("General error:", error);
-    res.status(500).json({ error: "Upload failed", details: error.message });
+    console.error(`${isUpdate ? "Update" : "Upload"} failed:`, error);
+    res
+      .status(500)
+      .json({
+        error: `${isUpdate ? "Update" : "Upload"} failed`,
+        details: error.message,
+      });
   }
 });
 

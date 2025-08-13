@@ -13,7 +13,6 @@ export function queryAll(data) {
 }
 
 export function getDeleteItemQuery(data) {
-  console.log("this is data from query: ", data);
   const [page = undefined, item = undefined] = data;
   if (data.length === 0) {
     alert("invalid data");
@@ -32,5 +31,17 @@ export function getSelectItemQuery(data) {
     return;
   }
   const query = `SELECT * FROM ${dataTables[page]} WHERE id = ${item};`;
+  return query;
+}
+
+export function editItemQuery(data) {
+  const [page = undefined, item = undefined, values = undefined] = data;
+  if (data.length === 0) {
+    alert("invalid data");
+    return;
+  }
+  const query = `UPDATE ${dataTables[page]} 
+    SET title = ${values[0]}, image = ${values[0]}, target = ${values[0]}
+    WHERE id = ${item};`;
   return query;
 }

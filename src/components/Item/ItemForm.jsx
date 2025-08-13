@@ -6,7 +6,7 @@ import dataTables from "../../content/dataTables";
 import formContent from "../../content/formContent";
 import { useModal } from "../../contexts/ModalContext";
 import { getDeleteItemQuery } from "../../utils/queryUtils";
-import { queryDatabase } from "../../utils/dataUtils";
+import { queryDatabase, uploadData } from "../../utils/dataUtils";
 
 const ItemForm = ({ item }) => {
   //const [formData, setFormData] = useState(null);
@@ -34,7 +34,35 @@ const ItemForm = ({ item }) => {
       } else if (buttonValue === "done") {
         const formData = new FormData(event.target);
         const formValues = Object.fromEntries(formData);
-        console.log("this is form values: ", formValues)
+        const hasContent =
+          formValues.name ||
+          formValues.image.name ||
+          formValues.target;
+
+        if (hasContent) {
+          const newData = new FormData();
+          newData.append("title", formValues.name);
+          newData.append("image", formValues.image);
+          newData.append("target", formValues.target);
+          newData.append("category", page);
+          newData.append("id", item.id);
+          await uploadData(newData);
+          setUpdate(true);
+        }
+
+        /* console.log(
+          "this is form values: ",
+          formValues,
+          "; these are item values: ",
+          item
+        );
+        if (formRef.current) {
+      formRef.current.reset();
+    }
+        let array = [];
+        if (formValues.name != "") {
+        }
+        const query = editItemQuery([page, item.id, array]); */
       }
     }
   }
