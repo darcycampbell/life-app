@@ -13,7 +13,8 @@ const ItemForm = ({ item }) => {
   const [input, setInput] = useState(["", "", ""]);
   const [itemType, setItemType] = useState(null);
   const { page, setUpdate } = useData();
-  const { closeModal } = useModal();
+  const { closeModal, windowOpened } = useModal();
+  const shouldOpen = Boolean(windowOpened === item.id);
 
   useEffect(() => {
     if (page) {
@@ -35,9 +36,7 @@ const ItemForm = ({ item }) => {
         const formData = new FormData(event.target);
         const formValues = Object.fromEntries(formData);
         const hasContent =
-          formValues.name ||
-          formValues.image.name ||
-          formValues.target;
+          formValues.name || formValues.image.name || formValues.target;
 
         if (hasContent) {
           const newData = new FormData();
@@ -75,14 +74,16 @@ const ItemForm = ({ item }) => {
 
   return (
     <div>
-      <OverlayWindow>
-        <form onSubmit={handleSubmit} onKeyDown={handleEnter}>
-          <FormTemplate
-            defaultText={[`Edit ${itemType}`, input[1], input[2]]}
-            formData={item}
-          />
-        </form>
-      </OverlayWindow>
+      {shouldOpen && (
+        <OverlayWindow>
+          <form onSubmit={handleSubmit} onKeyDown={handleEnter}>
+            <FormTemplate
+              defaultText={[`Edit ${itemType}`, input[1], input[2]]}
+              formData={item}
+            />
+          </form>
+        </OverlayWindow>
+      )}
     </div>
   );
 };

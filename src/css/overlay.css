@@ -16,8 +16,6 @@
   .overlay > .container.content {
     position: relative;
     background-color: cornsilk;
-    width: 50vw; 
-    height: 80vh;
-    padding: 25px;
+    padding: 25px 100px;
     border-radius: 10px;
   }

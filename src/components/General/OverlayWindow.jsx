@@ -15,7 +15,7 @@ const OverlayWindow = ({ children }) => {
       style={{ display: isOpen ? 'flex' : 'none' }}
       onClick={handleClick}
     >
-      <div className="content container">{isOpen && children}</div>
+      <div className="content container">{children}</div>
     </div>
   );
 };

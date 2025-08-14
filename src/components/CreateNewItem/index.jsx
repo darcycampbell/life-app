@@ -1,18 +1,20 @@
 import OverlayWindow from "../General/OverlayWindow";
 import AddItem from "./AddItem";
 import AddButton from "./AddButton";
-import { ModalProvider } from "../../contexts/ModalContext";
+import { useModal } from "../../contexts/ModalContext";
 
 const CreateNewItem = () => {
+  const { windowOpened } = useModal();
+  const shouldOpen = Boolean(windowOpened === "add");
   return (
-    <ModalProvider>
-      <div>
+    <div>
+      {shouldOpen && (
         <OverlayWindow>
           <AddItem />
         </OverlayWindow>
-        <AddButton />
-      </div>
-    </ModalProvider>
+      )}
+      <AddButton />
+    </div>
   );
 };
 

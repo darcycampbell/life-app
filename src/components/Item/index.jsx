@@ -1,13 +1,12 @@
 import ItemForm from "./ItemForm";
 import ItemObject from "./ItemObject";
-import { ModalProvider } from "../../contexts/ModalContext";
 
 const Item = ({ item }) => {
   return (
-    <ModalProvider>
+    <div>
       <ItemObject item={item} />
       <ItemForm item={item} />
-    </ModalProvider>
+    </div>
   );
 };
 

@@ -8,7 +8,7 @@ const ItemGrid = () => {
   const [items, setItems] = useState([]);
   const [flexGap, setFlexGap] = useState(15);
   const containerRef = useRef();
-  const { data, page } = useData()
+  const { data, page } = useData();
   const gapSize = { gap: `${flexGap}px` };
 
   useEffect(() => {
@@ -33,21 +33,12 @@ const ItemGrid = () => {
   }, [setItems, data, calcGap, page]);
 
   return (
-    <div
-      className="item grid container"
-      ref={containerRef}
-      style={gapSize}
-    >
-      {items.map((item) => {
-        return (
-          <Item
-            key={item.id}
-            item={item}
-          />
-        );
-      })}
-      <CreateNewItem />
-    </div>
+      <div className="item grid container" ref={containerRef} style={gapSize}>
+        {items.map((item) => {
+          return <Item key={item.id} item={item} />;
+        })}
+        <CreateNewItem />
+      </div>
   );
 };
 

@@ -23,19 +23,7 @@ const ItemObject = ({ item }) => {
 
   function handleRightClick(event) {
     event.preventDefault();
-    openModal();
-    if (page) {
-      const query = getSelectItemQuery([page, item.index]);
-      /* getData("database", query).then((data) => {
-            const item = data[0];
-            const object = {
-              name: item.title,
-              image: item.image,
-              target: item.target,
-            };
-            setFormData(object);
-          }); */
-    }
+    openModal(item.id);
   }
 
   return (
