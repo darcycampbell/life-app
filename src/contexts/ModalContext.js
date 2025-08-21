@@ -17,17 +17,14 @@ export const ModalProvider = ({ children }) => {
   const openModal = (window) => {
     setIsOpen(true);
     setWindowOpened(window);
-    console.log("window opened: ", window);
   };
   const closeModal = () => {
     setIsOpen(false);
     setWindowOpened(null);
   };
-  //const toggleModal = () => setIsOpen((prev) => !prev);
 
   const value = {
     isOpen,
-    setIsOpen,
     windowOpened,
     openModal,
     closeModal

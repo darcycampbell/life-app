@@ -9,7 +9,6 @@ const Main = () => {
 
   useEffect(() => {
     if (page && update) {
-      console.log("refreshData is triggered!!!!")
       refreshData();
       setUpdate(false);
     }

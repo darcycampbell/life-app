@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import NameInput from "./NameInput";
 import ImageUploader from "./ImageUploader";
 import TargetStatement from "./TargetStatement";
 import FormButton from "./FormButton";
+import FormMessage from "./FormMessage";
 
-const FormTemplate = ({ defaultText, formData }) => {
+const FormTemplate = ({ defaultText, formData, formMessage }) => {
   const [nameValue, setNameValue] = useState("");
   const [imageValue, setImageValue] = useState(null);
   const [targetValue, setTargetValue] = useState("");
   const [showDelete, setShowDelete] = useState(false);
+  const [showMessage, setShowMessage] = useState(false);
 
   useEffect(() => {
     if (formData) {
@@ -17,11 +19,14 @@ const FormTemplate = ({ defaultText, formData }) => {
       setTargetValue(formData.target);
       setShowDelete(true);
     }
-  }, [formData]);
+    if (formMessage) {
+      setShowMessage(true);
+    }
+  }, [formData, formMessage]);
 
   return (
     <div>
-      <NameInput name={defaultText[0]} value={nameValue} />
+       <NameInput name={defaultText[0]} value={nameValue} />
       <ImageUploader value={imageValue} />
       <TargetStatement
         text1={defaultText[1]}
@@ -30,6 +35,7 @@ const FormTemplate = ({ defaultText, formData }) => {
       />
       <FormButton value={"done"} />
       {showDelete && <FormButton value={"delete"} />}
+      {showMessage && <FormMessage value={formMessage} /> }
     </div>
   );
 };

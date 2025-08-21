@@ -42,7 +42,7 @@ const tableQueries = {
     )
     RETURNING *;
   `,
-  external: `
+  external:  `
     UPDATE tasks t
     SET score = (
       WITH metrics AS (
@@ -59,4 +59,4 @@ const tableQueries = {
   `,
 };
 
-export default tableQueries
+export default tableQueries;

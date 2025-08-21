@@ -7,6 +7,7 @@ import formContent from "../../content/formContent";
 import { useModal } from "../../contexts/ModalContext";
 import { getDeleteItemQuery } from "../../utils/queryUtils";
 import { queryDatabase, uploadData } from "../../utils/dataUtils";
+import { getCroppedImage } from "../../utils/imageUtils";
 
 const ItemForm = ({ item }) => {
   //const [formData, setFormData] = useState(null);
@@ -23,6 +24,20 @@ const ItemForm = ({ item }) => {
     }
   }, [page]);
 
+  async function getBlob(values) {
+    const preview = values.preview;
+    const imageDimensions = JSON.parse(values.imageDimensions);
+    const imageTransform = JSON.parse(values.imageTransform);
+
+    const blob = await getCroppedImage(
+      preview,
+      imageDimensions,
+      imageTransform
+    );
+
+    return blob;
+  }
+
   async function handleSubmit(event) {
     event.preventDefault();
     closeModal();
@@ -36,12 +51,13 @@ const ItemForm = ({ item }) => {
         const formData = new FormData(event.target);
         const formValues = Object.fromEntries(formData);
         const hasContent =
-          formValues.name || formValues.image.name || formValues.target;
-
-        if (hasContent) {
+          formValues.name || formValues.newImage || formValues.target;
+        console.log("new image? ", formValues.newImage)
+          if (hasContent) {
           const newData = new FormData();
           newData.append("title", formValues.name);
-          newData.append("image", formValues.image);
+          const blob = await getBlob(formValues);
+          newData.append("image", blob);
           newData.append("target", formValues.target);
           newData.append("category", page);
           newData.append("id", item.id);

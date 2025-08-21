@@ -9,7 +9,9 @@ require("dotenv").config({ path: __dirname + `/../../.env` });
 //import dataTables from "../content/dataTables";
 
 const app = express();
-const upload = multer();
+const upload = multer({ 
+  storage: multer.memoryStorage() // Important for handling blobs
+});
 app.use(cors());
 app.use(express.json());
 
@@ -56,6 +58,8 @@ app.post("/database", async (req, res) => {
 });
 
 app.post("/upload", upload.single("image"), async (req, res) => {
+  console.log('req.file:', req.file);
+  console.log('req.body:', req.body);
   const { category, title, target, id } = req.body;
   const file = req.file;
   const isUpdate = Boolean(id);
