@@ -46,14 +46,13 @@ const tableQueries = {
     UPDATE tasks t
     SET score = (
       WITH metrics AS (
-        SELECT
-          task_id,
-          PERCENT_RANK() OVER ( ORDER BY urgency_score ) as urgency_percentile
-        FROM task_records
+        SELECT 
+          COUNT(*) as record_count
+        FROM task_records tr
+        WHERE tr.task_id = t.id
       )
-      SELECT metrics.urgency_percentile * 100 / (100 - t.target)
+      SELECT record_count / t.target 
       FROM metrics
-      WHERE metrics.task_id = t.id
     )
     RETURNING *;
   `,

@@ -215,3 +215,12 @@ export async function getCroppedImage(
     img.src = originalImage;
   });
 }
+
+export async function getBlob(values) {
+  const preview = values.preview;
+  const imageDimensions = JSON.parse(values.imageDimensions);
+  const imageTransform = JSON.parse(values.imageTransform);
+
+  const blob = await getCroppedImage(preview, imageDimensions, imageTransform);
+  return blob;
+}

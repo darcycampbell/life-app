@@ -5,7 +5,8 @@ import { useData } from "../../contexts/DataContext";
 import { useModal } from "../../contexts/ModalContext";
 import { uploadData } from "../../utils/dataUtils";
 import { compressImage } from "../../utils/imageUtils";
-import { getCroppedImage } from "../../utils/imageUtils";
+import { getBlob } from "../../utils/imageUtils";
+import { isValidNumber } from "../../utils/numbUtils";
 
 const AddItem = () => {
   const [message, setMessage] = useState(null);
@@ -16,25 +17,13 @@ const AddItem = () => {
   //if the page is global information, I shouldn't have to pass this through, right?
   const input = formContent[page];
 
-  async function getBlob(values) {
-    const preview = values.preview;
-    const imageDimensions = JSON.parse(values.imageDimensions);
-    const imageTransform = JSON.parse(values.imageTransform);
-
-    const blob = await getCroppedImage(
-      preview,
-      imageDimensions,
-      imageTransform
-    );
-    return blob;
-  }
-
   async function handleSubmit(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
     const formValues = Object.fromEntries(formData);
     const blob = await getBlob(formValues);
-    const hasContent = formValues.name && blob && formValues.target;
+    const hasContent =
+      formValues.name && blob && isValidNumber(formValues.target);
     if (hasContent) {
       closeModal();
       const newData = new FormData();
@@ -47,11 +36,18 @@ const AddItem = () => {
       }
       await uploadData(newData);
       setUpdate(true);
+      //what is this?
       if (formRef.current) {
         formRef.current.reset();
       }
     } else {
-      setMessage("Please fill in all fields before submitting.");
+      if (message && message != "Please try again.") {
+        setMessage("Please try again.");
+      } else if (formValues.target && !isValidNumber(formValues.target)) {
+        setMessage("The target field requires a numeral.");
+      } else {
+        setMessage("Please fill in all fields before submitting.");
+      }
     }
   }
 

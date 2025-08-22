@@ -7,10 +7,10 @@ import formContent from "../../content/formContent";
 import { useModal } from "../../contexts/ModalContext";
 import { getDeleteItemQuery } from "../../utils/queryUtils";
 import { queryDatabase, uploadData } from "../../utils/dataUtils";
-import { getCroppedImage } from "../../utils/imageUtils";
+import { getBlob } from "../../utils/imageUtils";
+import { isValidNumber } from "../../utils/numbUtils";
 
 const ItemForm = ({ item }) => {
-  //const [formData, setFormData] = useState(null);
   const [input, setInput] = useState(["", "", ""]);
   const [itemType, setItemType] = useState(null);
   const { page, setUpdate } = useData();
@@ -24,20 +24,6 @@ const ItemForm = ({ item }) => {
     }
   }, [page]);
 
-  async function getBlob(values) {
-    const preview = values.preview;
-    const imageDimensions = JSON.parse(values.imageDimensions);
-    const imageTransform = JSON.parse(values.imageTransform);
-
-    const blob = await getCroppedImage(
-      preview,
-      imageDimensions,
-      imageTransform
-    );
-
-    return blob;
-  }
-
   async function handleSubmit(event) {
     event.preventDefault();
     closeModal();
@@ -50,34 +36,23 @@ const ItemForm = ({ item }) => {
       } else if (buttonValue === "done") {
         const formData = new FormData(event.target);
         const formValues = Object.fromEntries(formData);
-        const hasContent =
-          formValues.name || formValues.newImage || formValues.target;
-        console.log("new image? ", formValues.newImage)
-          if (hasContent) {
-          const newData = new FormData();
+        const newData = new FormData();
+        if (formValues.name.trim() != "") {
           newData.append("title", formValues.name);
+        }
+        if (formValues.newImage) {
           const blob = await getBlob(formValues);
           newData.append("image", blob);
+        }
+        if (isValidNumber(formValues.target)) {
           newData.append("target", formValues.target);
+        }
+        if (Array.from(newData.entries()).length > 0) {
           newData.append("category", page);
           newData.append("id", item.id);
           await uploadData(newData);
           setUpdate(true);
         }
-
-        /* console.log(
-          "this is form values: ",
-          formValues,
-          "; these are item values: ",
-          item
-        );
-        if (formRef.current) {
-      formRef.current.reset();
-    }
-        let array = [];
-        if (formValues.name != "") {
-        }
-        const query = editItemQuery([page, item.id, array]); */
       }
     }
   }
