@@ -21,13 +21,19 @@ const ItemObject = ({ item }) => {
     }
   }, [progressCircle, item]);
 
+  function handleLeftClick(event) {
+    event.preventDefault();
+    console.log("left clicked")
+    openModal(item.id + "left")
+  }
+
   function handleRightClick(event) {
     event.preventDefault();
-    openModal(item.id);
+    openModal(item.id + "right");
   }
 
   return (
-    <div className="main item" onContextMenu={handleRightClick}>
+    <div className="main item" onClick={handleLeftClick} onContextMenu={handleRightClick}>
       <div className="circular container">
         <img src={item.image} alt="user image" />
         <svg ref={svgRef}>

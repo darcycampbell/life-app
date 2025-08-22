@@ -26,7 +26,7 @@ const FormTemplate = ({ defaultText, formData, formMessage }) => {
 
   return (
     <div>
-       <NameInput name={defaultText[0]} value={nameValue} />
+      <NameInput name={defaultText[0]} value={nameValue} />
       <ImageUploader value={imageValue} />
       <TargetStatement
         text1={defaultText[1]}
@@ -35,7 +35,7 @@ const FormTemplate = ({ defaultText, formData, formMessage }) => {
       />
       <FormButton value={"done"} />
       {showDelete && <FormButton value={"delete"} />}
-      {showMessage && <FormMessage value={formMessage} /> }
+      {showMessage && <FormMessage value={formMessage} />}
     </div>
   );
 };

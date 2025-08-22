@@ -15,7 +15,7 @@ const ItemForm = ({ item }) => {
   const [itemType, setItemType] = useState(null);
   const { page, setUpdate } = useData();
   const { closeModal, windowOpened } = useModal();
-  const shouldOpen = Boolean(windowOpened === item.id);
+  const shouldOpen = Boolean(windowOpened === item.id + "right");
 
   useEffect(() => {
     if (page) {
